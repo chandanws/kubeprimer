@@ -8,5 +8,5 @@ spec:
     http:
       paths:
       - backend:
-          serviceName: web
+          serviceName: powerapp-web-service # questo è il name del service ?
           servicePort: 80

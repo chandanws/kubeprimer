@@ -113,6 +113,8 @@ Per l'affinity è bene taggare sempre i nodi
 * `kubectl get pods`
 * `kubectl get deployments`
 * `kubectl get rs` (per prendere i replicaset)
+* `kubectl get jobs`
+* `kubectl get qualsiasicosa`
 
 Fare lo scaling sempre sul deployment
 
@@ -190,3 +192,88 @@ Il servizio di ingress sta solo sui/sul master, da capire come si fa a fare un l
 ##### LoadBalancer
 
 solo su aws, gke
+
+
+
+### DaemonSet
+
+Esempio: vogliamo avere un agent che gira in tutti i nodi, il monitoring, logging, altro
+
+Non è un Pod normale.
+
+I Pod normali non possono mai morire, invece un DaemonSet può essere un job batch, che fa quello che deve fare e poi muore. Come è giusto che sia. Insomma, muore e siamo felici.
+
+
+### Job e CronJobs
+
+E' un pod che deve venire eseguito correttamente e poi deve finire.
+
+il tipo di Pod CronJobs non esiste ancora, ma lo stanno implementando
+
+
+### Volume e peristent volume
+
+da approfondire su ceph e glusterfs
+
+
+# Architettura Kubernetes 
+
+> lanciate una ciabatta a chi vuole spodestare i sysadmin
+
+https://speakerdeck.com/thockin/architecture-of-kubernetes
+
+
+
+* MASTER : non si schedula nulla sui master, si fa il taint per evitare lo scheduling
+* MINION : i worker node
+
+##### Kubelet
+
+E' un componente che ha dentro tutta una serie di pezzi per poter gestire il cluster
+
+La kubelet non parla con etcd
+
+## Servizi CORE
+
+### API 
+
+Fa tante cose, tra cui il control loop , accetta i comandi di kubelet tramite api.
+
+### Scheduler
+
+### etcd
+
+Contiene tutto lo stato del cluster, solo api e scheduler comunicano con etcd
+ 
+### HA
+
+Tutti i controllers sono single tone nel cluster
+
+etcd è bene non clusterizzarlo? se si clusterizza un master e più follower, fa un collo di bottiglia mega. Etcd è meglio flashare le info su disco , gli si fa fare il recovery dal journal se si spacca, i nodi non si fermano se il master si ferma
+
+TODO provare a spaccare il master e sostituirlo
+
+etcd è gigantesco in memory 
+
+Piccole info
+
+1. Lo stato è dichiarativo
+2. control loops
+3. Simple vs complex (ha ce ne fottiamo?)
+4. Il network è a livello di pod
+
+
+> l'upgrade è un troiaio, è , un , troiaio.
+
+# Monitoring e logging
+
+* Prometheus : metrica e service discovery su kubernetes, serve per fare gli alert, integrazione con grafana, prometheus sa cos'è kubernetes
+* fluentd : serve per la collection dei log, è nativo su kubernetes, e sputa su elastic search
+
+
+prometheus demo, provare
+
+
+
+
+
